@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 using MelonLoader;
 using debug; // The namespace of your mod class
 // ...
-[assembly: MelonInfo(typeof(debug.debug), "My Mod Name", "version", "Author Name")]
-[assembly: MelonGame("Game Developer", "BABBDI")]
+[assembly: MelonInfo(typeof(debug.debug), "Debug", "1.0.0", "VasilisThePikachu & MintzyG")]
+[assembly: MelonGame("LemaitreBros", "Babbdi")]
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
