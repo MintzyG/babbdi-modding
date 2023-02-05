@@ -45,6 +45,9 @@
         <Reference Include="UnityEngine.CoreModule">
           <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.InputLegacyModule">
           <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
         </Reference>

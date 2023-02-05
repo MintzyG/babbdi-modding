@@ -1,61 +1,80 @@
 ﻿using MelonLoader;
 using UnityEngine;
+using System.Collections;
 
 namespace debabbdi
 {
-    public class debabbdi : MelonMod
+    public class Debabbdi : MelonMod
     {
-        public static debabbdi instance;
+
+        public static Debabbdi Instance;
+
+        private static KeyCode _freezeToggleKey;
+        private static KeyCode _menuToggleKey;
         
-        private static KeyCode freezeToggleKey;
-        
-        private static bool frozen;
-        private static float baseTimeScale;
+        private static bool _frozen;
+        private static bool _menu;
+        private static float _baseTimeScale;
         public override void OnEarlyInitializeMelon()
         {
-            instance = this;
-            freezeToggleKey = KeyCode.Q;
-        }
-
-        public override void OnLateUpdate()
-        {
-            if (Input.GetKeyDown(freezeToggleKey))
-            {
-                ToggleFreeze();
-            }
+            Instance = this;
+            _freezeToggleKey = KeyCode.Q;
+            _menuToggleKey = KeyCode.M;
         }
         
-        /*
-        public static void DrawFrozenText()
+        // Formatting is absolutely horrendous
+        private void DrawMenu()
         {
-            .Label(new Rect(20, 20, 1000, 200), "<b><color=cyan><size=100>Frozen</size></color></b>");
+            GUI.Box(new Rect(0, 0, 300, 200), "Info \n \n Position X: \t \n Position Y:" +
+                                              " \t \n Position Z: \t \n Speed: \t \n Acceleration: \t");
         }
-        */
+        public override void OnLateUpdate()
+        {
+            if (Input.GetKeyDown(_freezeToggleKey))
+            {
+                ToggleFreeze();
+            } 
+            else if (Input.GetKeyDown(_menuToggleKey))
+            {
+                ToggleMenu();
+            }
+        }
 
+        private void ToggleMenu()
+        {
+            _menu = !_menu;
+
+            if (_menu)
+            {
+                MelonEvents.OnGUI.Subscribe(DrawMenu, 100);
+            }
+            else
+            {
+                MelonEvents.OnGUI.Unsubscribe(DrawMenu);
+            }
+        }
         private static void ToggleFreeze()
         {
-            frozen = !frozen;
+            _frozen = !_frozen;
 
-            if (frozen)
+            if (_frozen)
             {
-                instance.LoggerInstance.Msg("Freezing");
+                Instance.LoggerInstance.Msg("Freezing");
                 
-                // MelonEvents.OnGUI.Subscribe(DrawFrozenText, 100); // Register the 'Frozen' label
-                baseTimeScale = Time.timeScale; // Save the original time scale before freezing
+                _baseTimeScale = Time.timeScale; // Save the original time scale before freezing
                 Time.timeScale = 0;
             }
             else
             {
-                instance.LoggerInstance.Msg("Unfreezing");
+                Instance.LoggerInstance.Msg("Unfreezing");
                 
-                // MelonEvents.OnGUI.Unsubscribe(DrawFrozenText); // Unregister the 'Frozen' label
-                Time.timeScale = baseTimeScale; // Reset the time scale to what it was before we froze the time
+                Time.timeScale = _baseTimeScale; // Reset the time scale to what it was before we froze the time
             }
         }
 
         public override void OnDeinitializeMelon()
         {
-            if (frozen)
+            if (_frozen)
             {
                 ToggleFreeze(); // Unfreeze the game in case the melon gets unregistered
             }
