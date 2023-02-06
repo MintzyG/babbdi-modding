@@ -1,7 +1,9 @@
-﻿using MelonLoader;
+﻿using System;
+using MelonLoader;
 using UnityEngine;
 using System.Collections;
 using System.Diagnostics.SymbolStore;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 
@@ -15,6 +17,12 @@ namespace debabbdi
         private static KeyCode _freezeToggleKey;
         private static KeyCode _menuToggleKey;
         private static KeyCode _dumpDebugInfo;
+
+        private float coordinateX;
+        private float coordinateY;
+        private float coordinateZ;
+        private Vector3 velocity;
+        private double acceleration;
         
         private static bool _frozen;
         private static bool _menu;
@@ -30,8 +38,8 @@ namespace debabbdi
         // Formatting is absolutely horrendous
         private void DrawMenu()
         {
-            GUI.Box(new Rect(0, 0, 300, 200), "Info \n \n Position X: \t \n Position Y:" +
-                                              " \t \n Position Z: \t \n Speed: \t \n Acceleration: \t");
+            GUI.Box(new Rect(0, 0, 300, 200), "Info \n \n Position X: " + coordinateX + "\t \n Position Y: " + coordinateY +
+                                              " \t \n Position Z: " + coordinateZ + "\t \n Speed: " + velocity + "\t \n Acceleration: " + acceleration + "\t");
         }
         public override void OnLateUpdate()
         {
@@ -47,21 +55,36 @@ namespace debabbdi
             {
                 DumpDebug();
             }
-        }
+            
+            // Gets player info
+            foreach (var camera in Camera.allCameras)
+            {
+                if (camera.name == "Main Camera")
+                {
+                    velocity = camera.velocity;
+                    coordinateX = camera.transform.position.x;
+                    coordinateY = camera.transform.position.y;
+                    coordinateZ = camera.transform.position.z;
+                    acceleration = Math.Sqrt(Math.Pow(velocity.x, 2) + Math.Pow(velocity.y, 2) +
+                                             Math.Pow(velocity.z, 2));
 
+                }
+            }
+        }
         private static void DumpDebug()
         {
+            // Gets current scene name
             var sceneName = SceneManager.GetActiveScene().name;
             Instance.LoggerInstance.Msg("Loaded scene -> " + sceneName + "\n");
 
-            /*
+            /* Gets all cameras in loaded scene
             foreach (var camera in Camera.allCameras)
             {
                 Instance.LoggerInstance.Msg("Found Camera: " + camera.name + " " + camera.transform.position.x);
             }
             */
             
-            /*
+            /* Gets all objects in the loaded scene
             var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
             Instance.LoggerInstance.Msg("Object List: \n");
             foreach (var i in rootGameObjects)
@@ -93,7 +116,7 @@ namespace debabbdi
                 Instance.LoggerInstance.Msg("Freezing");
                 
                 _baseTimeScale = Time.timeScale; // Save the original time scale before freezing
-                Time.timeScale = 0;
+                Time.timeScale = 0.6f;
             }
             else
             {
