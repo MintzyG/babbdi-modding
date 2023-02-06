@@ -1,6 +1,9 @@
 ﻿using MelonLoader;
 using UnityEngine;
 using System.Collections;
+using System.Diagnostics.SymbolStore;
+using UnityEngine.SceneManagement;
+
 
 namespace debabbdi
 {
@@ -11,6 +14,7 @@ namespace debabbdi
 
         private static KeyCode _freezeToggleKey;
         private static KeyCode _menuToggleKey;
+        private static KeyCode _dumpDebugInfo;
         
         private static bool _frozen;
         private static bool _menu;
@@ -20,6 +24,7 @@ namespace debabbdi
             Instance = this;
             _freezeToggleKey = KeyCode.Q;
             _menuToggleKey = KeyCode.M;
+            _dumpDebugInfo = KeyCode.P;
         }
         
         // Formatting is absolutely horrendous
@@ -38,6 +43,32 @@ namespace debabbdi
             {
                 ToggleMenu();
             }
+            else if (Input.GetKeyDown(_dumpDebugInfo))
+            {
+                DumpDebug();
+            }
+        }
+
+        private static void DumpDebug()
+        {
+            var sceneName = SceneManager.GetActiveScene().name;
+            Instance.LoggerInstance.Msg("Loaded scene -> " + sceneName + "\n");
+
+            /*
+            foreach (var camera in Camera.allCameras)
+            {
+                Instance.LoggerInstance.Msg("Found Camera: " + camera.name + " " + camera.transform.position.x);
+            }
+            */
+            
+            /*
+            var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+            Instance.LoggerInstance.Msg("Object List: \n");
+            foreach (var i in rootGameObjects)
+            {
+                Instance.LoggerInstance.Msg("Found Object: " + i.name);
+            }
+            */
         }
 
         private void ToggleMenu()
@@ -72,6 +103,8 @@ namespace debabbdi
             }
         }
 
+        
+        
         public override void OnDeinitializeMelon()
         {
             if (_frozen)

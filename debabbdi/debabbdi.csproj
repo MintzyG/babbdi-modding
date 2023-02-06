@@ -51,6 +51,9 @@
         <Reference Include="UnityEngine.InputLegacyModule">
           <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.UIElementsModule">
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="main.cs" />
