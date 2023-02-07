@@ -2,50 +2,43 @@
 using MelonLoader;
 using UnityEngine;
 using System.Collections;
-using System.Diagnostics.SymbolStore;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-
 
 namespace debabbdi
 {
     public class Debabbdi : MelonMod
     {
-
-        public static Debabbdi Instance;
-
+        private static Debabbdi _instance;
+        
         private static KeyCode _freezeToggleKey;
         private static KeyCode _menuToggleKey;
         private static KeyCode _dumpDebugInfo;
 
-        private float coordinateX;
-        private float coordinateY;
-        private float coordinateZ;
-        private Vector3 velocity;
-        private double acceleration;
-        
-        private static bool _frozen;
+        private float _coordinateX;
+        private float _coordinateY;
+        private float _coordinateZ;
+        private Vector3 _velocity;
+        private double _acceleration;
+
+        private static bool _cheatDetected;
+        private static bool _freezeMenu;
         private static bool _menu;
-        private static float _baseTimeScale;
+
+        private static float _sliderHome = 1.0f;
+        
         public override void OnEarlyInitializeMelon()
         {
-            Instance = this;
-            _freezeToggleKey = KeyCode.Q;
-            _menuToggleKey = KeyCode.M;
-            _dumpDebugInfo = KeyCode.P;
+            _instance = this;
+            _freezeToggleKey = KeyCode.O;
+            _menuToggleKey = KeyCode.P;
+            _dumpDebugInfo = KeyCode.L;
         }
-        
-        // Formatting is absolutely horrendous
-        private void DrawMenu()
-        {
-            GUI.Box(new Rect(0, 0, 300, 200), "Info \n \n Position X: " + coordinateX + "\t \n Position Y: " + coordinateY +
-                                              " \t \n Position Z: " + coordinateZ + "\t \n Speed: " + velocity + "\t \n Acceleration: " + acceleration + "\t");
-        }
+
         public override void OnLateUpdate()
         {
             if (Input.GetKeyDown(_freezeToggleKey))
             {
-                ToggleFreeze();
+                FreezeMenu();
             } 
             else if (Input.GetKeyDown(_menuToggleKey))
             {
@@ -56,18 +49,17 @@ namespace debabbdi
                 DumpDebug();
             }
             
-            // Gets player info
+            // Gets player pos info off of the camera
             foreach (var camera in Camera.allCameras)
             {
                 if (camera.name == "Main Camera")
                 {
-                    velocity = camera.velocity;
-                    coordinateX = camera.transform.position.x;
-                    coordinateY = camera.transform.position.y;
-                    coordinateZ = camera.transform.position.z;
-                    acceleration = Math.Sqrt(Math.Pow(velocity.x, 2) + Math.Pow(velocity.y, 2) +
-                                             Math.Pow(velocity.z, 2));
-
+                    _velocity = camera.velocity;
+                    _coordinateX = camera.transform.position.x;
+                    _coordinateY = camera.transform.position.y;
+                    _coordinateZ = camera.transform.position.z;
+                    _acceleration = Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) +
+                                             Math.Pow(_velocity.z, 2));
                 }
             }
         }
@@ -75,15 +67,14 @@ namespace debabbdi
         {
             // Gets current scene name
             var sceneName = SceneManager.GetActiveScene().name;
-            Instance.LoggerInstance.Msg("Loaded scene -> " + sceneName + "\n");
+            _instance.LoggerInstance.Msg("Loaded scene -> " + sceneName + "\n");
 
-            /* Gets all cameras in loaded scene
+            // Gets all cameras in loaded scene
             foreach (var camera in Camera.allCameras)
             {
-                Instance.LoggerInstance.Msg("Found Camera: " + camera.name + " " + camera.transform.position.x);
+                _instance.LoggerInstance.Msg("Found Camera: " + camera.name);
             }
-            */
-            
+
             /* Gets all objects in the loaded scene
             var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
             Instance.LoggerInstance.Msg("Object List: \n");
@@ -93,7 +84,6 @@ namespace debabbdi
             }
             */
         }
-
         private void ToggleMenu()
         {
             _menu = !_menu;
@@ -107,33 +97,60 @@ namespace debabbdi
                 MelonEvents.OnGUI.Unsubscribe(DrawMenu);
             }
         }
-        private static void ToggleFreeze()
+        private void FreezeMenu()
         {
-            _frozen = !_frozen;
+            _freezeMenu = !_freezeMenu;
 
-            if (_frozen)
+            if (_freezeMenu)
             {
-                Instance.LoggerInstance.Msg("Freezing");
-                
-                _baseTimeScale = Time.timeScale; // Save the original time scale before freezing
-                Time.timeScale = 0.6f;
+                MelonEvents.OnGUI.Subscribe(DrawFreezeMenu, 100);
             }
             else
             {
-                Instance.LoggerInstance.Msg("Unfreezing");
-                
-                Time.timeScale = _baseTimeScale; // Reset the time scale to what it was before we froze the time
+                MelonEvents.OnGUI.Unsubscribe(DrawFreezeMenu);
             }
         }
+        private static void ToggleFreeze()
+        {
+            _cheatDetected = true;
 
-        
-        
+            if (_cheatDetected)
+            {
+                MelonEvents.OnGUI.Subscribe(cheatOn);
+            }
+            
+            _instance.LoggerInstance.Msg("Game speed set to: " + _sliderHome);
+            Time.timeScale = _sliderHome;
+        }
+        private void DrawFreezeMenu()
+        { 
+            _sliderHome = GUI.HorizontalSlider(new Rect(1000, 1000, 200, 50), _sliderHome, 0.1f, 2.0f);
+            
+            if (GUI.Button(new Rect(900, 900, 70, 30), "Confirm"))
+            {
+                ToggleFreeze();
+                FreezeMenu();
+            } 
+            else if (GUI.Button(new Rect(1000, 900, 70, 30), "Default"))
+            {
+                _sliderHome = 1.0f;
+                ToggleFreeze();
+                FreezeMenu();
+            }
+        }
+        private void DrawMenu()
+        {
+            GUI.Box(new Rect(0, 0, 300, 200), "Info \n \n Position X: " + _coordinateX + "\t \n Position Y: " + _coordinateY +
+                                              " \t \n Position Z: " + _coordinateZ + "\t \n Speed: " + _velocity + "\t \n Acceleration: " + _acceleration + "\t");
+        }
+        private static void cheatOn()
+        {
+            GUI.Box(new Rect(1817, 35, 100, 25),"<b><color=red>Cheated</color></b>", "richText");
+        }
         public override void OnDeinitializeMelon()
         {
-            if (_frozen)
-            {
-                ToggleFreeze(); // Unfreeze the game in case the melon gets unregistered
-            }
+            _sliderHome = 1.0f;
+            ToggleFreeze(); // Unfreeze the game in case the melon gets unregistered
         }
     }
 }
