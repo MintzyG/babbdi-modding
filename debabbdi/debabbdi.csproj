@@ -9,7 +9,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>debabbdi</RootNamespace>
         <AssemblyName>debabbdi</AssemblyName>
-        <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,20 +33,26 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="MelonLoader">
-          <HintPath>..\shareddll\MelonLoader.dll</HintPath>
+          <HintPath>..\..\..\BabbdiMods\MelonLoader\MelonLoader.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
         <Reference Include="UnityEngine">
-          <HintPath>..\shareddll\UnityEngine.dll</HintPath>
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
-          <HintPath>..\shareddll\UnityEngine.CoreModule.dll</HintPath>
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.InputLegacyModule">
-          <HintPath>..\shareddll\UnityEngine.InputLegacyModule.dll</HintPath>
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIElementsModule">
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>

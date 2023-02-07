@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using MelonLoader;
-using debabbdi; // The namespace of your mod class
+
 // ...
-[assembly: MelonInfo(typeof(debabbdi.debabbdi), "Debabbdi", "1.0.0", "VasilisThePikachu & MintzyG")]
+[assembly: MelonInfo(typeof(debabbdi.Debabbdi), "Debabbdi", "0.3.0", "VasilisThePikachu & MintzyG")]
 [assembly: MelonGame("LemaitreBros", "Babbdi")]
 
 
