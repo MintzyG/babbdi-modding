@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using MelonLoader;
 
 // ...
-[assembly: MelonInfo(typeof(debabbdi.Debabbdi), "Debabbdi", "1.0.0", "VasilisThePikachu & MintzyG")]
+[assembly: MelonInfo(typeof(debabbdi.Debabbdi), "Debabbdi", "0.3.0", "VasilisThePikachu & MintzyG")]
 [assembly: MelonGame("LemaitreBros", "Babbdi")]
 
 
