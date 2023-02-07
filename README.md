@@ -4,7 +4,7 @@
 A babbdi debug mod for experimenting for speedrunning
 
 ## How to install (at least for windows)
-1. Install [MelonLoader 0.5.7](https://github.com/LavaGang/MelonLoader/releases/tag/v0.5.7) by selecting the babbdi exe file
+1. Install [MelonLoader 0.5.7](https://github.com/LavaGang/MelonLoader/releases/tag/v0.5.7) by selecting the babbdi exe file [(Instructions here by MelonLoader if you need them)](https://github.com/LavaGang/MelonLoader#how-to-use-the-installer)
 2. Launch the game once to confirm MelonLoader has been installed, you should see the MelonLoader console launch along with the game
 3. Close your game and download the mod(s) you like either from github releases or [from my nextcloud](https://nextcloud.pikachu.systems/s/wDzwbPcHoZNKpng)
 4. Throw said ```.dll``` files into the **mods** folder on the games directory
