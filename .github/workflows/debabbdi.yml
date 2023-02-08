@@ -10,7 +10,7 @@ on:
     branches: [ "autobuildtest" ]
     
 env:
-  DOTNET_VERSION: '4.8.x'
+  DOTNET_VERSION: '6.0.x'
   
 jobs:
   build:
