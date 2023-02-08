@@ -11,6 +11,7 @@ on:
     
 env:
   DOTNET_VERSION: '6.0.x'
+  DIR: 'debabbdi'
   
 jobs:
   build:
@@ -24,6 +25,7 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Restore dependencies
-      run: dotnet restore --packages shareddll
+      run: dotnet restore
+      working-directory: ${{ env.DIR }}
     - name: Build
       run: dotnet build --configuration Debug --no-restore
