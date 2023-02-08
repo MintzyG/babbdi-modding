@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using MelonLoader;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
 
 namespace debabbdi
@@ -10,43 +9,43 @@ namespace debabbdi
     {
         private static Debabbdi _instance;
         
-        private static KeyCode _freezeToggleKey;
-        private static KeyCode _menuToggleKey;
         private static KeyCode _dumpDebugInfo;
+        private static KeyCode _debugMenuKeyCode;
 
         private float _coordinateX;
         private float _coordinateY;
         private float _coordinateZ;
         private Vector3 _velocity;
         private double _acceleration;
+        private string _sCoordX;
+        private string _sCoordY;
+        private string _sCoordZ;
+        private string _sVel;
+        private string _sAccel;
 
         private static bool _cheatDetected;
-        private static bool _freezeMenu;
         private static bool _menu;
+        private static bool _debugMenu;
 
         private static float _sliderHome = 1.0f;
+        private static float _gameSpeed = 1.0f;
         
         public override void OnEarlyInitializeMelon()
         {
             _instance = this;
-            _freezeToggleKey = KeyCode.O;
-            _menuToggleKey = KeyCode.P;
             _dumpDebugInfo = KeyCode.L;
+            _debugMenuKeyCode = KeyCode.I;
         }
 
         public override void OnLateUpdate()
         {
-            if (Input.GetKeyDown(_freezeToggleKey))
-            {
-                FreezeMenu();
-            } 
-            else if (Input.GetKeyDown(_menuToggleKey))
-            {
-                ToggleMenu();
-            }
-            else if (Input.GetKeyDown(_dumpDebugInfo))
+            if (Input.GetKeyDown(_dumpDebugInfo))
             {
                 DumpDebug();
+            }
+            else if (Input.GetKeyDown(_debugMenuKeyCode))
+            {
+                DebugMenu();
             }
             
             // Gets player pos info off of the camera
@@ -60,6 +59,14 @@ namespace debabbdi
                     _coordinateZ = camera.transform.position.z;
                     _acceleration = Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) +
                                              Math.Pow(_velocity.z, 2));
+
+                    _sVel = _velocity.ToString("0.00");
+                    _sCoordX = _coordinateX.ToString("0.00");
+                    _sCoordY = _coordinateY.ToString("0.00");
+                    _sCoordZ = _coordinateZ.ToString("0.00");
+                    _sAccel = _acceleration.ToString("0.00");
+
+
                 }
             }
         }
@@ -84,6 +91,42 @@ namespace debabbdi
             }
             */
         }
+
+        private void DrawDebugMenu()
+        {
+            
+            GUI.Box(new Rect(0, 210, 350, 800), "Debug Menu\n \n Speed Mod:");
+            
+            _sliderHome = GUI.HorizontalSlider(new Rect(70, 320, 200, 20), _sliderHome, 0.1f, 2.0f);
+            
+            if (GUI.Button(new Rect(40, 280, 70, 30), "Confirm"))
+            {
+                _gameSpeed = _sliderHome;
+                ToggleFreeze();
+                _cheatDetected = true;
+
+                if (_cheatDetected)
+                {
+                    MelonEvents.OnGUI.Unsubscribe(cheatOn);
+                    MelonEvents.OnGUI.Subscribe(cheatOn);
+                }
+
+            } 
+            else if (GUI.Button(new Rect(130, 280, 70, 30), "Default"))
+            {
+                _sliderHome = 1.0f;
+                _gameSpeed = 1.0f;
+                ToggleFreeze();
+            }
+            
+            GUI.Box(new Rect(220, 280, 70, 30), _sliderHome.ToString("0.00"));
+
+            if (GUI.Button(new Rect(40, 340, 100, 30), "Toggle Info"))
+            {
+                ToggleMenu();
+            }
+            
+        }
         private void ToggleMenu()
         {
             _menu = !_menu;
@@ -97,51 +140,31 @@ namespace debabbdi
                 MelonEvents.OnGUI.Unsubscribe(DrawMenu);
             }
         }
-        private void FreezeMenu()
+        private void DebugMenu()
         {
-            _freezeMenu = !_freezeMenu;
+            _debugMenu = !_debugMenu;
 
-            if (_freezeMenu)
+            if (_debugMenu)
             {
-                MelonEvents.OnGUI.Subscribe(DrawFreezeMenu, 100);
+                MelonEvents.OnGUI.Subscribe(DrawDebugMenu, 100);
             }
             else
             {
-                MelonEvents.OnGUI.Unsubscribe(DrawFreezeMenu);
-            }
-        }
-        private static void ToggleFreeze()
-        {
-            _cheatDetected = true;
-
-            if (_cheatDetected)
-            {
-                MelonEvents.OnGUI.Subscribe(cheatOn);
-            }
-            
-            _instance.LoggerInstance.Msg("Game speed set to: " + _sliderHome);
-            Time.timeScale = _sliderHome;
-        }
-        private void DrawFreezeMenu()
-        { 
-            _sliderHome = GUI.HorizontalSlider(new Rect(1000, 1000, 200, 50), _sliderHome, 0.1f, 2.0f);
-            
-            if (GUI.Button(new Rect(900, 900, 70, 30), "Confirm"))
-            {
-                ToggleFreeze();
-                FreezeMenu();
-            } 
-            else if (GUI.Button(new Rect(1000, 900, 70, 30), "Default"))
-            {
-                _sliderHome = 1.0f;
-                ToggleFreeze();
-                FreezeMenu();
+                MelonEvents.OnGUI.Unsubscribe(DrawDebugMenu);
             }
         }
         private void DrawMenu()
         {
-            GUI.Box(new Rect(0, 0, 300, 200), "Info \n \n Position X: " + _coordinateX + "\t \n Position Y: " + _coordinateY +
-                                              " \t \n Position Z: " + _coordinateZ + "\t \n Speed: " + _velocity + "\t \n Acceleration: " + _acceleration + "\t");
+            GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + _sCoordX +
+                                              "\t \n Position Y: " + _sCoordY + " \t \n Position Z: " + _sCoordZ +
+                                              "\t \n Speed: " + _sVel + "\t \n Acceleration: " + _sAccel + 
+                                              "\t \n Game Speed: " + _gameSpeed.ToString("0.00") +
+                                              "\t \n");
+        }
+        private static void ToggleFreeze()
+        {
+            _instance.LoggerInstance.Msg("Game speed set to: " + _sliderHome);
+            Time.timeScale = _sliderHome;
         }
         private static void cheatOn()
         {
