@@ -1,7 +1,6 @@
 ﻿using System;
 using MelonLoader;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
 
 namespace debabbdi
@@ -18,11 +17,11 @@ namespace debabbdi
         private float _coordinateZ;
         private Vector3 _velocity;
         private double _acceleration;
-        private string sCoordX;
-        private string sCoordY;
-        private string sCoordZ;
-        private string sVel;
-        private string sAccel;
+        private string _sCoordX;
+        private string _sCoordY;
+        private string _sCoordZ;
+        private string _sVel;
+        private string _sAccel;
 
         private static bool _cheatDetected;
         private static bool _menu;
@@ -61,11 +60,11 @@ namespace debabbdi
                     _acceleration = Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) +
                                              Math.Pow(_velocity.z, 2));
 
-                    sVel = _velocity.ToString("0.00");
-                    sCoordX = _coordinateX.ToString("0.00");
-                    sCoordY = _coordinateY.ToString("0.00");
-                    sCoordZ = _coordinateZ.ToString("0.00");
-                    sAccel = _acceleration.ToString("0.00");
+                    _sVel = _velocity.ToString("0.00");
+                    _sCoordX = _coordinateX.ToString("0.00");
+                    _sCoordY = _coordinateY.ToString("0.00");
+                    _sCoordZ = _coordinateZ.ToString("0.00");
+                    _sAccel = _acceleration.ToString("0.00");
 
 
                 }
@@ -156,9 +155,9 @@ namespace debabbdi
         }
         private void DrawMenu()
         {
-            GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + sCoordX +
-                                              "\t \n Position Y: " + sCoordY + " \t \n Position Z: " + sCoordZ +
-                                              "\t \n Speed: " + sVel + "\t \n Acceleration: " + sAccel + 
+            GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + _sCoordX +
+                                              "\t \n Position Y: " + _sCoordY + " \t \n Position Z: " + _sCoordZ +
+                                              "\t \n Speed: " + _sVel + "\t \n Acceleration: " + _sAccel + 
                                               "\t \n Game Speed: " + _gameSpeed.ToString("0.00") +
                                               "\t \n");
         }
