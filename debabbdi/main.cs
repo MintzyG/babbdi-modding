@@ -12,6 +12,8 @@ namespace debabbdi
         private static KeyCode _dumpDebugInfo;
         private static KeyCode _debugMenuKeyCode;
 
+        private TpClass _tp = new TpClass();
+        
         private float _coordinateX;
         private float _coordinateY;
         private float _coordinateZ;
@@ -26,7 +28,8 @@ namespace debabbdi
         private static bool _cheatDetected;
         private static bool _menu;
         private static bool _debugMenu;
-
+        private static bool _teleports;
+        
         private static float _sliderHome = 1.0f;
         private static float _gameSpeed = 1.0f;
         
@@ -91,25 +94,20 @@ namespace debabbdi
             }
             */
         }
-
+        // Draws cheat menu
         private void DrawDebugMenu()
         {
             
             GUI.Box(new Rect(0, 210, 350, 800), "Debug Menu\n \n Speed Mod:");
             
-            _sliderHome = GUI.HorizontalSlider(new Rect(70, 320, 200, 20), _sliderHome, 0.1f, 2.0f);
+            _sliderHome = GUI.HorizontalSlider(new Rect(70, 320, 200, 20), _sliderHome, 0f, 2.0f);
             
             if (GUI.Button(new Rect(40, 280, 70, 30), "Confirm"))
             {
                 _gameSpeed = _sliderHome;
                 ToggleFreeze();
                 _cheatDetected = true;
-
-                if (_cheatDetected)
-                {
-                    MelonEvents.OnGUI.Unsubscribe(cheatOn);
-                    MelonEvents.OnGUI.Subscribe(cheatOn);
-                }
+                DetectCheat();
 
             } 
             else if (GUI.Button(new Rect(130, 280, 70, 30), "Default"))
@@ -125,8 +123,81 @@ namespace debabbdi
             {
                 ToggleMenu();
             }
-            
+
+            if (GUI.Button(new Rect(40, 400, 100, 30), "Teleports"))
+            {
+                ToggleTeleportsMenu();
+            }
         }
+
+        private void ToggleTeleportsMenu()
+        {
+            _teleports = !_teleports;
+
+            if (_teleports)
+            {
+                MelonEvents.OnGUI.Subscribe(TeleportsMenu, 100);
+            }
+            else
+            {
+                MelonEvents.OnGUI.Unsubscribe(TeleportsMenu);
+            } 
+        }
+
+        private void TeleportsMenu()
+        {
+            
+            string[] names = { "NoToolsJump", "BridgeJump", "NoToolsZoop", "Warp", "Ticket" };
+            
+            GUI.Box(new Rect(1700, 40, 200, 800), "Teleports");
+
+            for (int i = 0; i < 5; i++)
+            {
+                if (GUI.Button(new Rect(1740, 20 + (50 * (i + 1)), 120, 30), names[i]))
+                {
+                    if (SceneManager.GetActiveScene().name == "Scene_AAA")
+                    {
+                        _cheatDetected = true;
+                        DetectCheat();
+                        
+                        GameObject player = GameObject.Find("Player");
+
+                        switch (names[i])
+                        {
+                            case "NoToolsJump":
+                                player.transform.position = _tp.TeleportFixed("NoToolsJump");
+                                _instance.LoggerInstance.Msg("NTJ-TP");
+                                break;
+                            case "BridgeJump":
+                                player.transform.position = _tp.TeleportFixed("BridgeJump");
+                                _instance.LoggerInstance.Msg("BJ-TP");
+                                break;
+                            case "NoToolsZoop":
+                                player.transform.position = _tp.TeleportFixed("NoToolsZoop");
+                                _instance.LoggerInstance.Msg("NTZ-TP");
+                                break;
+                            case "Warp":
+                                player.transform.position = _tp.TeleportFixed("Warp");
+                                _instance.LoggerInstance.Msg("W-TP");
+                                break;
+                            case "Ticket":
+                                player.transform.position = _tp.TeleportFixed("Ticket");
+                                _instance.LoggerInstance.Msg("T-TP");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        _instance.LoggerInstance.Msg("Cannot TP from menu");  
+                    }
+                }
+            }
+        }
+            
+            
+        
+        
+        // Toggles cheat menu
         private void ToggleMenu()
         {
             _menu = !_menu;
@@ -140,6 +211,7 @@ namespace debabbdi
                 MelonEvents.OnGUI.Unsubscribe(DrawMenu);
             }
         }
+        // Activates and deactivates debug info menu
         private void DebugMenu()
         {
             _debugMenu = !_debugMenu;
@@ -153,6 +225,7 @@ namespace debabbdi
                 MelonEvents.OnGUI.Unsubscribe(DrawDebugMenu);
             }
         }
+        // This is the debug info menu
         private void DrawMenu()
         {
             GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + _sCoordX +
@@ -161,19 +234,32 @@ namespace debabbdi
                                               "\t \n Game Speed: " + _gameSpeed.ToString("0.00") +
                                               "\t \n");
         }
+        // Slows down the game
         private static void ToggleFreeze()
         {
             _instance.LoggerInstance.Msg("Game speed set to: " + _sliderHome);
             Time.timeScale = _sliderHome;
         }
+        // Detect cheat
+        private void DetectCheat()
+        {
+            if (_cheatDetected)
+            {
+                MelonEvents.OnGUI.Unsubscribe(cheatOn);
+                MelonEvents.OnGUI.Subscribe(cheatOn);
+            }
+        }
+        
+        // Shows you are cheating/cheated
         private static void cheatOn()
         {
             GUI.Box(new Rect(1817, 35, 100, 25),"<b><color=red>Cheated</color></b>", "richText");
         }
+        // Unfreezes game in case mod gets unloaded
         public override void OnDeinitializeMelon()
         {
             _sliderHome = 1.0f;
-            ToggleFreeze(); // Unfreeze the game in case the melon gets unregistered
+            ToggleFreeze();
         }
     }
 }
