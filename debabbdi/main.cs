@@ -13,10 +13,9 @@ namespace debabbdi
         private static KeyCode _debugMenuKeyCode;
 
         private TpClass _tp = new TpClass();
+
+        private Vector3 _myVector;
         
-        private float _coordinateX;
-        private float _coordinateY;
-        private float _coordinateZ;
         private Vector3 _velocity;
         private double _acceleration;
         private string _sCoordX;
@@ -56,17 +55,16 @@ namespace debabbdi
             {
                 if (camera.name == "Main Camera")
                 {
+                    _myVector = camera.transform.position;
                     _velocity = camera.velocity;
-                    _coordinateX = camera.transform.position.x;
-                    _coordinateY = camera.transform.position.y;
-                    _coordinateZ = camera.transform.position.z;
+                    
                     _acceleration = Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) +
-                                             Math.Pow(_velocity.z, 2));
+                                              Math.Pow(_velocity.z, 2));
 
                     _sVel = _velocity.ToString("0.00");
-                    _sCoordX = _coordinateX.ToString("0.00");
-                    _sCoordY = _coordinateY.ToString("0.00");
-                    _sCoordZ = _coordinateZ.ToString("0.00");
+                    _sCoordX = _myVector.x.ToString("0.00");
+                    _sCoordY = _myVector.y.ToString("0.00");
+                    _sCoordZ = _myVector.z.ToString("0.00");
                     _sAccel = _acceleration.ToString("0.00");
 
 
@@ -144,12 +142,13 @@ namespace debabbdi
             } 
         }
 
+        // Teleports buttons menu
         private void TeleportsMenu()
         {
             
             string[] names = { "NoToolsJump", "BridgeJump", "NoToolsZoop", "Warp", "Ticket" };
             
-            GUI.Box(new Rect(1700, 40, 200, 800), "Teleports");
+            GUI.Box(new Rect(1700, 40, 200, 800), "Teleports \n \n \n \n \n \n \n \n \n \n X: \t Y: \t Z:");
 
             for (int i = 0; i < 5; i++)
             {
@@ -166,25 +165,29 @@ namespace debabbdi
                         {
                             case "NoToolsJump":
                                 player.transform.position = _tp.TeleportFixed("NoToolsJump");
-                                _instance.LoggerInstance.Msg("NTJ-TP");
+                                _instance.LoggerInstance.Msg("NTJump-TP");
                                 break;
                             case "BridgeJump":
                                 player.transform.position = _tp.TeleportFixed("BridgeJump");
-                                _instance.LoggerInstance.Msg("BJ-TP");
+                                _instance.LoggerInstance.Msg("BridgeJump-TP");
                                 break;
                             case "NoToolsZoop":
                                 player.transform.position = _tp.TeleportFixed("NoToolsZoop");
-                                _instance.LoggerInstance.Msg("NTZ-TP");
+                                _instance.LoggerInstance.Msg("NTZoop-TP");
                                 break;
                             case "Warp":
                                 player.transform.position = _tp.TeleportFixed("Warp");
-                                _instance.LoggerInstance.Msg("W-TP");
+                                _instance.LoggerInstance.Msg("Warp-TP");
                                 break;
                             case "Ticket":
                                 player.transform.position = _tp.TeleportFixed("Ticket");
-                                _instance.LoggerInstance.Msg("T-TP");
+                                _instance.LoggerInstance.Msg("Ticket-TP");
                                 break;
                         }
+
+                        GUI.TextField(new Rect(1720, 380, 40, 30), "");
+                        GUI.TextField(new Rect(1780, 380, 40, 30), "");
+                        GUI.TextField(new Rect(1840, 380, 40, 30), "");
                     }
                     else
                     {
@@ -193,10 +196,6 @@ namespace debabbdi
                 }
             }
         }
-            
-            
-        
-        
         // Toggles cheat menu
         private void ToggleMenu()
         {
@@ -228,6 +227,7 @@ namespace debabbdi
         // This is the debug info menu
         private void DrawMenu()
         {
+            GameObject player = GameObject.Find("Player");
             GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + _sCoordX +
                                               "\t \n Position Y: " + _sCoordY + " \t \n Position Z: " + _sCoordZ +
                                               "\t \n Speed: " + _sVel + "\t \n Acceleration: " + _sAccel + 
