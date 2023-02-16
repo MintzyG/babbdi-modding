@@ -13,6 +13,11 @@ namespace debabbdi
         private static KeyCode _debugMenuKeyCode;
 
         private TpClass _tp = new TpClass();
+        private GroundedCheck _groundedCheck = new GroundedCheck();
+
+        private GameObject _player;
+
+        
 
         private Vector3 _myVector;
         
@@ -28,6 +33,7 @@ namespace debabbdi
         private static bool _menu;
         private static bool _debugMenu;
         private static bool _teleports;
+        private static bool _isGrounded;
         
         private static float _sliderHome = 1.0f;
         private static float _gameSpeed = 1.0f;
@@ -37,8 +43,24 @@ namespace debabbdi
             _instance = this;
             _dumpDebugInfo = KeyCode.L;
             _debugMenuKeyCode = KeyCode.I;
+            
         }
-
+        public override void OnUpdate()
+        {
+            if (SceneManager.GetActiveScene().name == "Scene_AAA")
+            {
+                _isGrounded = _groundedCheck.CheckGrounded(_player);
+            }
+        }
+        
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        {
+            if (SceneManager.GetActiveScene().name == "Scene_AAA")
+            {
+                _player = GameObject.Find("Player");
+            }
+        }
+        // Happens after everything else happened in a frame
         public override void OnLateUpdate()
         {
             if (Input.GetKeyDown(_dumpDebugInfo))
@@ -83,6 +105,15 @@ namespace debabbdi
                 _instance.LoggerInstance.Msg("Found Camera: " + camera.name);
             }
 
+            // Gets all childs from Object
+            /*
+            GameObject Object = GameObject.Find("Object");
+            for (var i = 0; i < Object.transform.childCount; i++)
+            {
+                _instance.LoggerInstance.Msg(player.transform.GetChild(i));
+            }
+            */
+            
             /* Gets all objects in the loaded scene
             var rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
             Instance.LoggerInstance.Msg("Object List: \n");
@@ -127,7 +158,6 @@ namespace debabbdi
                 ToggleTeleportsMenu();
             }
         }
-
         private void ToggleTeleportsMenu()
         {
             _teleports = !_teleports;
@@ -158,29 +188,27 @@ namespace debabbdi
                     {
                         _cheatDetected = true;
                         DetectCheat();
-                        
-                        GameObject player = GameObject.Find("Player");
 
                         switch (names[i])
                         {
                             case "NoToolsJump":
-                                player.transform.position = _tp.TeleportFixed("NoToolsJump");
+                                _player.transform.position = _tp.TeleportFixed("NoToolsJump");
                                 _instance.LoggerInstance.Msg("NTJump-TP");
                                 break;
                             case "BridgeJump":
-                                player.transform.position = _tp.TeleportFixed("BridgeJump");
+                                _player.transform.position = _tp.TeleportFixed("BridgeJump");
                                 _instance.LoggerInstance.Msg("BridgeJump-TP");
                                 break;
                             case "NoToolsZoop":
-                                player.transform.position = _tp.TeleportFixed("NoToolsZoop");
+                                _player.transform.position = _tp.TeleportFixed("NoToolsZoop");
                                 _instance.LoggerInstance.Msg("NTZoop-TP");
                                 break;
                             case "Warp":
-                                player.transform.position = _tp.TeleportFixed("Warp");
+                                _player.transform.position = _tp.TeleportFixed("Warp");
                                 _instance.LoggerInstance.Msg("Warp-TP");
                                 break;
                             case "Ticket":
-                                player.transform.position = _tp.TeleportFixed("Ticket");
+                                _player.transform.position = _tp.TeleportFixed("Ticket");
                                 _instance.LoggerInstance.Msg("Ticket-TP");
                                 break;
                         }
@@ -227,12 +255,11 @@ namespace debabbdi
         // This is the debug info menu
         private void DrawMenu()
         {
-            GameObject player = GameObject.Find("Player");
             GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + _sCoordX +
                                               "\t \n Position Y: " + _sCoordY + " \t \n Position Z: " + _sCoordZ +
                                               "\t \n Speed: " + _sVel + "\t \n Acceleration: " + _sAccel + 
                                               "\t \n Game Speed: " + _gameSpeed.ToString("0.00") +
-                                              "\t \n");
+                                              "\t \n Is Grounded: " + _isGrounded);
         }
         // Slows down the game
         private static void ToggleFreeze()
