@@ -1,12 +1,10 @@
-﻿using MelonLoader;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 namespace debabbdi
 {
     public class GroundedCheck
     {
-        private bool _isGrounded = false;
+        private bool _isGrounded;
 
         public bool CheckGrounded(GameObject player)
         {
