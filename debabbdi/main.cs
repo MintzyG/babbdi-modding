@@ -2,6 +2,7 @@ using System;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 namespace debabbdi
 {
@@ -43,7 +44,6 @@ namespace debabbdi
             _instance = this;
             _dumpDebugInfo = KeyCode.L;
             _debugMenuKeyCode = KeyCode.I;
-            
         }
         public override void OnUpdate()
         {
@@ -177,9 +177,13 @@ namespace debabbdi
         {
             
             string[] names = { "NoToolsJump", "BridgeJump", "NoToolsZoop", "Warp", "Ticket" };
-            
+
             GUI.Box(new Rect(1700, 40, 200, 800), "Teleports \n \n \n \n \n \n \n \n \n \n X: \t Y: \t Z:");
 
+            GUI.TextField(new Rect(1720, 380, 40, 30), "");
+            GUI.TextField(new Rect(1780, 380, 40, 30), "");
+            GUI.TextField(new Rect(1840, 380, 40, 30), "");
+            
             for (int i = 0; i < 5; i++)
             {
                 if (GUI.Button(new Rect(1740, 20 + (50 * (i + 1)), 120, 30), names[i]))
@@ -212,10 +216,6 @@ namespace debabbdi
                                 _instance.LoggerInstance.Msg("Ticket-TP");
                                 break;
                         }
-
-                        GUI.TextField(new Rect(1720, 380, 40, 30), "");
-                        GUI.TextField(new Rect(1780, 380, 40, 30), "");
-                        GUI.TextField(new Rect(1840, 380, 40, 30), "");
                     }
                     else
                     {
