@@ -51,11 +51,15 @@
         <Reference Include="UnityEngine.InputLegacyModule">
           <HintPath>..\shareddll\UnityEngine.InputLegacyModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+          <HintPath>..\..\..\BabbdiMods\Babbdi_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.UIElementsModule">
           <HintPath>..\shareddll\UnityEngine.UIElementsModule.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="GroundedCheck.cs" />
         <Compile Include="main.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="TPClass.cs" />
