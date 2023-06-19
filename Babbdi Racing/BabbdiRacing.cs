@@ -9,39 +9,57 @@ using System.Threading.Tasks;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static ChangeSceneButton;
 
 namespace Babbdi_Racing
 {
     public class BabbdiRacing : MelonMod
     {
-
         public static BabbdiRacing instance;
 
-        private static KeyCode StartGame;
+        private static MenuInterface MenuI = new MenuInterface();
+
+        public bool RacingMode;
+        public bool MappingMode;
+
+        private static KeyCode _toggleMenu;
 
         public override void OnEarlyInitializeMelon()
         {
             Melon<BabbdiRacing>.Logger.Msg("Mod Opened!");
-
             instance = this;
 
-            StartGame = KeyCode.P;
+            _toggleMenu = KeyCode.P;
         }
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            Melon<BabbdiRacing>.Logger.Msg($"Scene {sceneName} was loaded");
-
+            if (SceneManager.GetActiveScene().name == "MainMenu")
+            {
+                RacingMode = false; MappingMode = false;
+            } 
         }
 
         public override void OnLateUpdate()
         {
-            if (Input.GetKeyDown(StartGame) && SceneManager.GetActiveScene().name == "MainMenu")
+            if (Input.GetKeyDown(_toggleMenu) && SceneManager.GetActiveScene().name == "MainMenu")
             {
-                SceneManager.LoadScene("Scene_AAA");
+                MenuI.ToggleMenu("MainMenu", instance);
+            }  
+            else if (Input.GetKeyDown(_toggleMenu))
+            {
+                MenuI.ToggleMenu("InGame", instance);
             }
+            
         }
 
+        public void OpenGame() 
+        {
+            MenuI.ToggleMenu("MainMenu", instance);
+            SceneManager.LoadScene("Scene_AAA");
+        }
+
+
     }
+
 }
+

@@ -28,10 +28,10 @@ namespace debabbdi
                     _target.y = 50.92f;
                     _target.z = 190.86f;
                     return _target;
-                case "BridgeJump":
-                    _target.x = -272.21f;
-                    _target.y = 5.04f;
-                    _target.z = 63.93f;
+                case "HighPoint":
+                    _target.x = 74.73f;
+                    _target.y = 106.45f;
+                    _target.z = -52.45f;
                     return _target;
                 case "NoToolsZoop":
                     _target.x = 30.81f;

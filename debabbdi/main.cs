@@ -176,7 +176,7 @@ namespace debabbdi
         private void TeleportsMenu()
         {
             
-            string[] names = { "NoToolsJump", "BridgeJump", "NoToolsZoop", "Warp", "Ticket" };
+            string[] names = { "NoToolsJump", "HighPoint", "NoToolsZoop", "Warp", "Ticket" };
 
             GUI.Box(new Rect(1700, 40, 200, 800), "Teleports \n \n \n \n \n \n \n \n \n \n X: \t Y: \t Z:");
 
@@ -199,9 +199,9 @@ namespace debabbdi
                                 _player.transform.position = _tp.TeleportFixed("NoToolsJump");
                                 _instance.LoggerInstance.Msg("NTJump-TP");
                                 break;
-                            case "BridgeJump":
-                                _player.transform.position = _tp.TeleportFixed("BridgeJump");
-                                _instance.LoggerInstance.Msg("BridgeJump-TP");
+                            case "HighPoint":
+                                _player.transform.position = _tp.TeleportFixed("HighPoint");
+                                _instance.LoggerInstance.Msg("HighPoint-TP");
                                 break;
                             case "NoToolsZoop":
                                 _player.transform.position = _tp.TeleportFixed("NoToolsZoop");
