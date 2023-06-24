@@ -15,6 +15,7 @@ namespace Babbdi_Racing
     public class BabbdiRacing : MelonMod
     {
         public static BabbdiRacing instance;
+        SecretFinder Secrets = new SecretFinder();
 
         private static MenuInterface MenuI = new MenuInterface();
 
@@ -44,12 +45,18 @@ namespace Babbdi_Racing
             if (Input.GetKeyDown(_toggleMenu) && SceneManager.GetActiveScene().name == "MainMenu")
             {
                 MenuI.ToggleMenu("MainMenu", instance);
-            }  
+            }
             else if (Input.GetKeyDown(_toggleMenu))
             {
                 MenuI.ToggleMenu("InGame", instance);
+                MelonEvents.OnGUI.Subscribe(Menu);
             }
-            
+
+        }
+
+        public void Menu()
+        {
+            GUI.Box(new Rect(1700, 40, 120, 80), Secrets.target.ToString());
         }
 
         public void OpenGame() 

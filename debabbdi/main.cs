@@ -23,12 +23,16 @@ namespace debabbdi
         private Vector3 _myVector;
         
         private Vector3 _velocity;
+        private double lastVec;
         private double _acceleration;
         private string _sCoordX;
         private string _sCoordY;
         private string _sCoordZ;
         private string _sVel;
         private string _sAccel;
+        private int _bounces;
+        private double _lastVelocity;
+        private double _velDiff;
 
         private static bool _cheatDetected;
         private static bool _menu;
@@ -60,6 +64,46 @@ namespace debabbdi
                 _player = GameObject.Find("Player");
             }
         }
+
+        public override void OnFixedUpdate()
+        {
+
+            // Gets player pos info off of the camera
+            foreach (var camera in Camera.allCameras)
+            {
+                if (camera.name == "Main Camera")
+                {
+                    _myVector = camera.transform.position;
+                    _velocity = camera.velocity;
+
+                    
+
+                    _acceleration = (Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) + Math.Pow(_velocity.z, 2)) - lastVec) / Time.deltaTime;
+
+                    lastVec = Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) + Math.Pow(_velocity.z, 2));
+
+                    _sVel = _velocity.ToString("0.00");
+                    _sCoordX = _myVector.x.ToString("0.00");
+                    _sCoordY = _myVector.y.ToString("0.00");
+                    _sCoordZ = _myVector.z.ToString("0.00");
+                    _sAccel = _acceleration.ToString("0.00");
+
+                    _velDiff = _lastVelocity - _velocity.y;
+
+                    if ((Math.Abs(_velDiff) > 10) && (_acceleration < 0) && (_isGrounded == false)) 
+                    {
+
+                        _bounces += 1;
+                    
+                    }
+
+                    _lastVelocity = _velocity.y;
+
+                    
+
+                }
+            }
+        }
         // Happens after everything else happened in a frame
         public override void OnLateUpdate()
         {
@@ -70,27 +114,6 @@ namespace debabbdi
             else if (Input.GetKeyDown(_debugMenuKeyCode))
             {
                 DebugMenu();
-            }
-            
-            // Gets player pos info off of the camera
-            foreach (var camera in Camera.allCameras)
-            {
-                if (camera.name == "Main Camera")
-                {
-                    _myVector = camera.transform.position;
-                    _velocity = camera.velocity;
-                    
-                    _acceleration = Math.Sqrt(Math.Pow(_velocity.x, 2) + Math.Pow(_velocity.y, 2) +
-                                              Math.Pow(_velocity.z, 2));
-
-                    _sVel = _velocity.ToString("0.00");
-                    _sCoordX = _myVector.x.ToString("0.00");
-                    _sCoordY = _myVector.y.ToString("0.00");
-                    _sCoordZ = _myVector.z.ToString("0.00");
-                    _sAccel = _acceleration.ToString("0.00");
-
-
-                }
             }
         }
         private static void DumpDebug()
@@ -255,11 +278,11 @@ namespace debabbdi
         // This is the debug info menu
         private void DrawMenu()
         {
-            GUI.Box(new Rect(0, 0, 300, 150), "Info \n \n Position X: " + _sCoordX +
+            GUI.Box(new Rect(0, 0, 300, 170), "Info \n \n Position X: " + _sCoordX +
                                               "\t \n Position Y: " + _sCoordY + " \t \n Position Z: " + _sCoordZ +
                                               "\t \n Speed: " + _sVel + "\t \n Acceleration: " + _sAccel + 
                                               "\t \n Game Speed: " + _gameSpeed.ToString("0.00") +
-                                              "\t \n Is Grounded: " + _isGrounded);
+                                              "\t \n Is Grounded: " + _isGrounded + "\t \n Bounces: " + _bounces);
         }
         // Slows down the game
         private static void ToggleFreeze()

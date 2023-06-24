@@ -18,23 +18,26 @@ namespace Babbdi_Racing
         private static bool _startMenu;
 
     
-        private void StartMenu(BabbdiRacing babbdiRacing)
+        private void StartMenu()
         {
-            BabbdiRacing instance = new BabbdiRacing();
+            SecretFinder instance = new SecretFinder();
 
+            GUI.Box(new Rect(1700, 40, 120, 80), instance.target.ToString());
+
+
+            /*
             if (GUI.Button(new Rect(1700, 40, 120, 80), "Mapping"))
             {
-                babbdiRacing.MappingMode = !babbdiRacing.MappingMode;
-                Melon<BabbdiRacing>.Logger.Msg($"Mapping {instance.MappingMode}");
+                
                 instance.OpenGame();
             }
 
             if (GUI.Button(new Rect(1700, 120, 120, 80), "Racing"))
             {
-                instance.RacingMode = !instance.RacingMode;
-                Melon<BabbdiRacing>.Logger.Msg($"Racing {instance.RacingMode}");
+               
                 instance.OpenGame();
             }
+            */
         }
 
         public void ToggleMenu(string menu, BabbdiRacing instance)
@@ -46,11 +49,11 @@ namespace Babbdi_Racing
                     _startMenu = !_startMenu;
                     if (_startMenu)
                     {
-                        MelonEvents.OnGUI.Unsubscribe(BabbdiRacing, StartMenu);
+                        MelonEvents.OnGUI.Unsubscribe(StartMenu);
                     }
                     else
                     {
-                        MelonEvents.OnGUI.Subscribe(BabbdiRacing, StartMenu);
+                        MelonEvents.OnGUI.Subscribe(StartMenu);
                     }
                     break;
                 case "InGame":
